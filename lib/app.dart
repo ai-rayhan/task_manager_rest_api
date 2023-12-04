@@ -12,6 +12,7 @@ class TaskManagerApp extends StatelessWidget {
       navigatorKey: navigationKey,
       home: const SplashScreen(),
       theme: ThemeData(
+        useMaterial3: true,
         inputDecorationTheme: const InputDecorationTheme(
           fillColor: Colors.white,
           filled: true,
@@ -35,6 +36,7 @@ class TaskManagerApp extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
           )
         )
+
       )
     );
   }

@@ -58,7 +58,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     animationDuration: const Duration(milliseconds: 300),
                     enableActiveFill: true,
                     onCompleted: (v) {
-                      print("Completed");
+                      debugPrint("Completed");
                     },
                     onChanged: (value) {},
                     beforeTextPaste: (text) {
