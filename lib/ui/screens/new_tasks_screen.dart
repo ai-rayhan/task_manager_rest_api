@@ -119,6 +119,7 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
                         task: taskListModel.taskList![index],
                         onStatusChange: () {
                           getNewTaskList();
+                          getTaskCountSummaryList();
                         },
                         showProgress: (inProgress) {
                           getNewTaskInProgress = inProgress;
