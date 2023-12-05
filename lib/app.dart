@@ -33,9 +33,11 @@ class TaskManagerApp extends StatelessWidget {
         primarySwatch: Colors.green,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
             padding: const EdgeInsets.symmetric(vertical: 10),
           )
-        )
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(backgroundColor: Colors.green,shape: CircleBorder())
 
       )
     );

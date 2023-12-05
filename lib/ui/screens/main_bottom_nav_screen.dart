@@ -35,10 +35,10 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.abc), label: 'New'),
+          BottomNavigationBarItem(icon: Icon(Icons.access_time_outlined), label: 'New'),
           BottomNavigationBarItem(icon: Icon(Icons.change_circle_outlined), label: 'In Progress'),
-          BottomNavigationBarItem(icon: Icon(Icons.done), label: 'Completed'),
-          BottomNavigationBarItem(icon: Icon(Icons.close), label: 'Cancelled'),
+          BottomNavigationBarItem(icon: Icon(Icons.check_circle_outlined), label: 'Completed'),
+          BottomNavigationBarItem(icon: Icon(Icons.cancel_outlined), label: 'Cancelled'),
         ],
       ),
     );
