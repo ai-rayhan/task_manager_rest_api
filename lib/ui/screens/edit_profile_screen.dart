@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '/data/models/user_model.dart';
 import '/data/network_caller/network_caller.dart';
@@ -24,7 +25,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  AuthController authController = Get.find<AuthController>();
+
   bool _updateProfileInProgress = false;
 
   XFile? photo;
@@ -32,10 +35,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _emailTEController.text = AuthController.user?.email ?? '';
-    _firstNameTEController.text = AuthController.user?.firstName ?? '';
-    _lastNameTEController.text = AuthController.user?.lastName ?? '';
-    _mobileTEController.text = AuthController.user?.mobile ?? '';
+    _emailTEController.text = authController.user?.email ?? '';
+    _firstNameTEController.text = authController.user?.firstName ?? '';
+    _lastNameTEController.text = authController.user?.lastName ?? '';
+    _mobileTEController.text = authController.user?.mobile ?? '';
   }
 
   @override
@@ -53,7 +56,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Form(
-                      key: _formKey,
+                      key:_formKey ,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -73,14 +76,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           TextFormField(
                             controller: _emailTEController,
-                            decoration:
-                                const InputDecoration(hintText: 'Email'),
-                            validator: (value) {
-                              if (value == null || value.isEmpty || !value.contains('@')) {
-                                return 'Please enter a valid email';
+                            decoration: const InputDecoration(hintText: 'Email',),
+                              validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
                               }
                               return null;
                             },
+                          
                           ),
                           const SizedBox(
                             height: 8,
@@ -89,7 +92,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             controller: _firstNameTEController,
                             decoration:
                                 const InputDecoration(hintText: 'First name'),
-                            validator: (value) {
+                                   validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your First name';
                               }
@@ -103,17 +106,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             controller: _lastNameTEController,
                             decoration:
                                 const InputDecoration(hintText: 'Last name'),
+                                   validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your Last name';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(
                             height: 8,
                           ),
                           TextFormField(
                             controller: _mobileTEController,
-                            decoration:
-                                const InputDecoration(hintText: 'Mobile'),
-                            validator: (value) {
+                            decoration: const InputDecoration(hintText: 'Mobile'),
+                               validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your Mobile';
+                                return 'Please enter your mobile';
                               }
                               return null;
                             },
@@ -123,8 +131,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           TextFormField(
                             controller: _passwordTEController,
-                            decoration: const InputDecoration(
-                                hintText: 'Password (optional)'),
+                            decoration:
+                                const InputDecoration(hintText: 'Password (optional)'),
                           ),
                           const SizedBox(
                             height: 16,
@@ -137,9 +145,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 child: CircularProgressIndicator(),
                               ),
                               child: ElevatedButton(
-                                onPressed: updateProfile,
-                                child: const Icon(
-                                    Icons.arrow_circle_right_outlined),
+                                onPressed: (){
+                                   if (_formKey.currentState!.validate()) {
+                                    // If all fields are valid, call updateProfile()
+                                    updateProfile();
+                                  }
+                                },
+                                child:
+                                    const Icon(Icons.arrow_circle_right_outlined),
                               ),
                             ),
                           )
@@ -157,16 +170,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> updateProfile() async {
-    if (_formKey.currentState!.validate()) {
-       _updateProfileInProgress = true;
+    _updateProfileInProgress = true;
     if (mounted) {
       setState(() {});
     }
     String? photoInBase64;
     Map<String, dynamic> inputData = {
       "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "email": _emailTEController.text.trim(),
+      "lastName" : _lastNameTEController.text.trim(),
+      "email" : _emailTEController.text.trim(),
       "mobile": _mobileTEController.text.trim(),
     };
 
@@ -174,7 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       inputData['password'] = _passwordTEController.text;
     }
 
-    if (photo != null) {
+    if (photo != null){
       List<int> imageBytes = await photo!.readAsBytes();
       photoInBase64 = base64Encode(imageBytes);
       inputData['photo'] = photoInBase64;
@@ -189,12 +201,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {});
     }
     if (response.isSuccess) {
-      AuthController.updateUserInformation(UserModel(
-          email: _emailTEController.text.trim(),
-          firstName: _firstNameTEController.text.trim(),
-          lastName: _lastNameTEController.text.trim(),
-          mobile: _mobileTEController.text.trim(),
-          photo: photoInBase64 ?? AuthController.user?.photo));
+      Get.find<AuthController>().updateUserInformation(UserModel(
+        email: _emailTEController.text.trim(),
+        firstName: _firstNameTEController.text.trim(),
+        lastName: _lastNameTEController.text.trim(),
+        mobile: _mobileTEController.text.trim(),
+        photo: photoInBase64 ?? Get.find<AuthController>().user?.photo
+      ));
       if (mounted) {
         showSnackMessage(context, 'Update profile success!');
       }
@@ -202,7 +215,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (mounted) {
         showSnackMessage(context, 'Update profile failed. Try again.');
       }
-    }
     }
   }
 
@@ -247,8 +259,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 padding: const EdgeInsets.only(left: 16),
                 child: Visibility(
                   visible: photo == null,
-                  replacement: Text(photo?.name ?? ''),
-                  child: const Text('Select a photo'),
+                    replacement: Text(photo?.name ?? ''),
+                    child: const Text('Select a photo'),
                 ),
               ),
             ),

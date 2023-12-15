@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_rest_api/data/network_caller/network_caller.dart';
+import 'package:task_manager_rest_api/data/network_caller/network_response.dart';
+import 'package:task_manager_rest_api/data/utility/urls.dart';
 import '/ui/screens/login_screen.dart';
-import '/ui/screens/pin_verification_screen.dart';
 import '/ui/widgets/body_background.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
-
+  const ResetPasswordScreen({super.key, required this.email, required this.otp});
+ final String email;
+ final String otp;
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _confirmpasswordTEController =
+      TextEditingController();
+  @override
+  void dispose() {
+    _passwordTEController.dispose();
+    _confirmpasswordTEController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,11 +54,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     height: 24,
                   ),
                   TextFormField(
+                    controller: _passwordTEController,
                     decoration: const InputDecoration(
                       hintText: 'Password',
                     ),
                   ),
                   TextFormField(
+                    controller: _confirmpasswordTEController,
                     decoration: const InputDecoration(
                       hintText: 'Confirm Password',
                     ),
@@ -56,13 +71,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PinVerificationScreen(),
-                          ),
-                        );
+                      onPressed: () async {
+                        NetworkResponse response = await NetworkCaller().postRequest(
+                            "${Urls.recoverResetPass}",body: {
+                              'email':widget.email,
+                              'OTP':widget.otp,
+                              'password':_passwordTEController,
+                            });
+                        print(
+                            "${Urls.verifyEmail}/${_passwordTEController.text}");
+                        print(response.jsonResponse);
+                        print(response.statusCode);
                       },
                       child: const Text('Confirm'),
                     ),

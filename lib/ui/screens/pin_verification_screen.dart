@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager_rest_api/data/network_caller/network_caller.dart';
+import 'package:task_manager_rest_api/data/network_caller/network_response.dart';
+import 'package:task_manager_rest_api/data/utility/urls.dart';
 import '/ui/screens/login_screen.dart';
 import '/ui/screens/reset_password_screen.dart';
 import '/ui/widgets/body_background.dart';
 
 class PinVerificationScreen extends StatefulWidget {
-  const PinVerificationScreen({super.key});
-
+  const PinVerificationScreen({super.key, required this.email});
+  final String email;
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
+  String? otp;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,8 +61,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     ),
                     animationDuration: const Duration(milliseconds: 300),
                     enableActiveFill: true,
-                    onCompleted: (v) {
-                      debugPrint("Completed");
+                    onCompleted: (o) {
+                      setState(() {
+                        otp = o;
+                      });
+                      print(otp);
                     },
                     onChanged: (value) {},
                     beforeTextPaste: (text) {
@@ -72,11 +79,17 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        NetworkResponse response = await NetworkCaller()
+                            .getRequest(
+                                "${Urls.recoverVerifyOTP}/${widget.email}/$otp");
+                        print("${Urls.recoverVerifyOTP}/${otp}");
+                        print(response.jsonResponse);
+                        print(response.statusCode);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ResetPasswordScreen(),
+                            builder: (context) =>  ResetPasswordScreen(email: widget.email,otp: otp!,),
                           ),
                         );
                       },

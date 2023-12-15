@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '/ui/controllers/auth_controller.dart';
+import '/ui/controllers/login_controller.dart';
+import '/ui/controllers/new_task_controller.dart';
 import '/ui/screens/splash_screen.dart';
 
 class TaskManagerApp extends StatelessWidget {
@@ -8,11 +12,10 @@ class TaskManagerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: navigationKey,
       home: const SplashScreen(),
       theme: ThemeData(
-        useMaterial3: true,
         inputDecorationTheme: const InputDecorationTheme(
           fillColor: Colors.white,
           filled: true,
@@ -33,13 +36,20 @@ class TaskManagerApp extends StatelessWidget {
         primarySwatch: Colors.green,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
             padding: const EdgeInsets.symmetric(vertical: 10),
           )
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(backgroundColor: Colors.green,shape: CircleBorder())
-
-      )
+        )
+      ),
+      initialBinding: ControllerBinder(),
     );
+  }
+}
+
+class ControllerBinder extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(AuthController());
+    Get.put(LoginController());
+    Get.put(NewTaskController());
   }
 }

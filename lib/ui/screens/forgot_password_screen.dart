@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_rest_api/data/network_caller/network_caller.dart';
+import 'package:task_manager_rest_api/data/network_caller/network_response.dart';
+import 'package:task_manager_rest_api/data/utility/urls.dart';
 import '/ui/screens/pin_verification_screen.dart';
 import '/ui/widgets/body_background.dart';
 
@@ -10,6 +13,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+    final TextEditingController _emailTEController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +46,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     height: 24,
                   ),
                   TextFormField(
+                    controller: _emailTEController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       hintText: 'Email',
@@ -53,11 +58,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async{
+                            NetworkResponse response = await NetworkCaller()
+                            .getRequest("${Urls.verifyEmail}/${_emailTEController.text}");
+                        print("${Urls.verifyEmail}/${_emailTEController.text}");
+                        print(response.jsonResponse);
+                        print(response.statusCode);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const PinVerificationScreen(),
+                            builder: (context) =>  PinVerificationScreen(email:_emailTEController.text ,),
                           ),
                         );
                       },
