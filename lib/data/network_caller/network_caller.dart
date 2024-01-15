@@ -20,10 +20,10 @@ class NetworkCaller {
         'Content-type': 'Application/json',
             'token' : AuthController.token.toString(),
       });
-      log(response.headers.toString());
       log(response.statusCode.toString());
       log(response.body.toString());
-      if (response.statusCode == 200) {
+       var status= jsonDecode(response.body)['status'];
+      if (response.statusCode == 200&& status=='success') {
         return NetworkResponse(
           isSuccess: true,
           jsonResponse: jsonDecode(response.body),
@@ -61,7 +61,9 @@ class NetworkCaller {
       log(response.headers.toString());
       log(response.statusCode.toString());
       log(response.body.toString());
-      if (response.statusCode == 200) {
+      var status= jsonDecode(response.body)['status'];
+   
+      if (response.statusCode == 200 && status=='success') {
         return NetworkResponse(
           isSuccess: true,
           jsonResponse: jsonDecode(response.body),

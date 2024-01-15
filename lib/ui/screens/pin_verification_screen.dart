@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager_rest_api/data/network_caller/network_caller.dart';
 import 'package:task_manager_rest_api/data/network_caller/network_response.dart';
 import 'package:task_manager_rest_api/data/utility/urls.dart';
+import 'package:task_manager_rest_api/ui/controllers/forget_password_controller.dart';
 import '/ui/screens/login_screen.dart';
 import '/ui/screens/reset_password_screen.dart';
 import '/ui/widgets/body_background.dart';
 
 class PinVerificationScreen extends StatefulWidget {
-  const PinVerificationScreen({super.key, required this.email});
-  final String email;
+  const PinVerificationScreen({super.key,
+  //  required this.email
+   });
+  // final String email;
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   String? otp;
+    final ForgetPasswordController _forgetPasswordController =
+      Get.find<ForgetPasswordController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,9 +89,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                         NetworkResponse response = await NetworkCaller()
                             .getRequest(
                                 "${Urls.recoverVerifyOTP}/${widget.email}/$otp");
-                        print("${Urls.recoverVerifyOTP}/${otp}");
-                        print(response.jsonResponse);
-                        print(response.statusCode);
+                      
                         Navigator.push(
                           context,
                           MaterialPageRoute(

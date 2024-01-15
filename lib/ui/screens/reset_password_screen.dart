@@ -1,14 +1,18 @@
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager_rest_api/data/network_caller/network_caller.dart';
 import 'package:task_manager_rest_api/data/network_caller/network_response.dart';
 import 'package:task_manager_rest_api/data/utility/urls.dart';
+import 'package:task_manager_rest_api/ui/widgets/snack_message.dart';
 import '/ui/screens/login_screen.dart';
 import '/ui/widgets/body_background.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key, required this.email, required this.otp});
- final String email;
- final String otp;
+  const ResetPasswordScreen(
+      {super.key, required this.email, required this.otp});
+  final String email;
+  final String otp;
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
@@ -72,16 +76,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        NetworkResponse response = await NetworkCaller().postRequest(
-                            "${Urls.recoverResetPass}",body: {
-                              'email':widget.email,
-                              'OTP':widget.otp,
-                              'password':_passwordTEController,
-                            });
-                        print(
-                            "${Urls.verifyEmail}/${_passwordTEController.text}");
-                        print(response.jsonResponse);
-                        print(response.statusCode);
+                        if (await resetPassword()) {
+                          Get.offAll( const LoginScreen());
+                        }
                       },
                       child: const Text('Confirm'),
                     ),
@@ -121,5 +118,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
       ),
     );
+  }
+
+  Future<bool> resetPassword() async {
+    NetworkResponse response =
+        await NetworkCaller().postRequest(Urls.recoverResetPass, body: {
+      'email': widget.email,
+      'OTP': widget.otp,
+      'password': _passwordTEController.text,
+    });
+
+    if (response.isSuccess) {
+      showSnackMessage(context, "password changed ");
+      return true;
+    } else {
+      showSnackMessage(context, "an error occur ");
+    }
+    return false;
   }
 }
