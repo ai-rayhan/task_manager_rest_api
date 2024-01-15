@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_manager_rest_api/ui/controllers/forget_password_controller.dart';
 import '/ui/controllers/auth_controller.dart';
 import '/ui/controllers/login_controller.dart';
 import '/ui/controllers/new_task_controller.dart';
@@ -51,5 +52,6 @@ class ControllerBinder extends Bindings {
     Get.put(AuthController());
     Get.put(LoginController());
     Get.put(NewTaskController());
+    Get.put(ForgetPasswordController());
   }
 }

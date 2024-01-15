@@ -88,12 +88,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       onPressed: () async {
                         NetworkResponse response = await NetworkCaller()
                             .getRequest(
-                                "${Urls.recoverVerifyOTP}/${widget.email}/$otp");
-                      
+                                "${Urls.recoverVerifyOTP}/${_forgetPasswordController.email}/$otp");
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  ResetPasswordScreen(email: widget.email,otp: otp!,),
+                            builder: (context) =>  ResetPasswordScreen(email: _forgetPasswordController.email,otp: otp!,),
                           ),
                         );
                       },
